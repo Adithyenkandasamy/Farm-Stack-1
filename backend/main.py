@@ -1,18 +1,21 @@
 from fastapi  import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from core.config import Settings
+
+settings = Settings()
 
 app = FastAPI(
-    title = "Choose Your Own Adventure Game API",
-    description = "api to generate cool stories",
-    version = "0.1.0",
-    docs_url = "/docs",
-    redoc_url = "/redoc",
+    title="Choose Your Own Adventure Game API",
+    description="api to generate cool stories",
+    version="0.1.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origns=["*"],
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

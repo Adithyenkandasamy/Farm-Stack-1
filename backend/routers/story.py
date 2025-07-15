@@ -1,7 +1,7 @@
 import uuid
 from typing import Optional
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, Cookie, Responce, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, Cookie, Response, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from db.database import get_db, SessionLocal
@@ -9,7 +9,7 @@ from models.story import Story, StoryNode
 from models.job import StoryJob
 from schemas.story import (
     CreateStoryRequest, CompleteStoryResponse, CompleteStoryNodeResponse)
-from schemas.job import StoryJobResponce
+from schemas.job import StoryJobResponse
 
 router = APIRouter(
     prefix="/stories",
@@ -21,17 +21,19 @@ def get_session_id(session_id: Optional[str] = Cookie(None)):
         session_id = str(uuid.uuid4())
     return session_id    
 
-@router.post("/create", response_model = StoryJopResponce)
+@router.post("/create", response_model = StoryJobResponse)
 def create_story(
     request: CreateStoryRequest,
     background_tasks: BackgroundTasks,
-    responce: Responce,
+    responce: Response,
     session_id: str = Depends(get_session_id),
     db: Session = Depends(get_db)
 ):
     responce.set_cookie(key="session_id", value=session_id, httponly=True)
 
-    job_id = StoryJob(
+    job_id = str(uuid.uuid4())
+    
+    job = StoryJob(
         job_id = job_id,
         session_id = session_id,
         theme = request.theme,
@@ -71,7 +73,7 @@ def generate_story_task(job_id: str, theme: str, session_id: str):
         db.close()
 
 
-@router.get("/{story_id}/complete", responce_model = CompleteStoryResponse)
+@router.get("/{story_id}/complete", response_model = CompleteStoryResponse)
 def get_complete_story(story_id: int, db: Session = Depends(get_db)):
     story = db.query(Story).filter(Story.id == story_id).first()
     if not story:

@@ -11,6 +11,8 @@ from schemas.story import (
     CreateStoryRequest, CompleteStoryResponse, CompleteStoryNodeResponse)
 from schemas.job import StoryJobResponse
 
+from core.story_generator import StoryGenerator
+
 router = APIRouter(
     prefix="/stories",
     tags=["Stories"]
@@ -57,9 +59,9 @@ def generate_story_task(job_id: str, theme: str, session_id: str):
             job.status = "in_progress"
             db.commit()  
 
-            story={}
+            story = StoryGenerator.generate_story(db,session_id, theme)
 
-            job.story_id = 1
+            job.story_id = story.id
             job.status = "completed"
             job.completed_at = datetime.now()
             db.commit()
@@ -79,7 +81,9 @@ def get_complete_story(story_id: int, db: Session = Depends(get_db)):
     if not story:
         raise HTTPException(status_code=404, detail="Story not found")
 
-    return story
+    complete_story = build_complete_story_tree(db, story)
+    return complete_story
+
 
 def build_complete_story_tree(db: Session, story: Story) -> CompleteStoryResponse:
     pass    

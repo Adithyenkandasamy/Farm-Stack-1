@@ -23,6 +23,11 @@ def get_session_id(session_id: Optional[str] = Cookie(None)):
         session_id = str(uuid.uuid4())
     return session_id    
 
+@router.options("/create")
+async def options_create():
+    return Response(status_code=200)
+
+
 @router.post("/create", response_model = StoryJobResponse)
 def create_story(
     request: CreateStoryRequest,

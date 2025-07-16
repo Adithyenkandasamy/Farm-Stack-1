@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     ALLOWED_ORIGINS: str = ""
     OPENAI_API_KEY: str | None = None
-    GEMINI_API_KEY: str | None = None  # for Google Gemini support
+    GOOGLE_API_KEY: str | None = None  # for Google Gemini support
     LLM_PROVIDER: str = "openai"  # 'openai' or 'gemini'
 
     @field_validator("ALLOWED_ORIGINS")

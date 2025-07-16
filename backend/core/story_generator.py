@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 
-from langchain_google_genai import ChatGoogleGenerativeAI
+
 from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 
@@ -15,6 +15,7 @@ class StoryGenerator:
 
     @classmethod
     def _get_llm(cls):
+        from langchain_google_genai import ChatGoogleGenerativeAI
         return ChatGoogleGenerativeAI(
             model="gemini-2.0-flash",
             temperature=0.7

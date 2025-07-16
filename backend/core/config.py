@@ -7,9 +7,11 @@ from pydantic import field_validator
 class Settings(BaseSettings):
     API_PREFIX: str = "/api"
     DEBUG: bool = False
-    DATABASE_URL : str
+    DATABASE_URL: str
     ALLOWED_ORIGINS: str = ""
-    OPENAI_API_KEY: str
+    OPENAI_API_KEY: str | None = None
+    GEMINI_API_KEY: str | None = None  # for Google Gemini support
+    LLM_PROVIDER: str = "openai"  # 'openai' or 'gemini'
 
     @field_validator("ALLOWED_ORIGINS")
     def parse_allowed_origins(cls, v: str) -> List[str]:
